@@ -20,11 +20,11 @@ jobs:
 
     - name: Install dependencies
       run: |
-        choco install -y perl activeperl
-        choco install -y nasm
-        choco install -y awk
-        choco install -y patch
-        choco install -y diffutils
+        scoop install perl
+        scoop install nasm
+        scoop install gawk
+        scoop install patch
+        scoop install diffutils
 
     - name: Build
       run: |
