@@ -9,32 +9,33 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: scottyhardy/docker-wine:latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout Apache HTTPD code
       uses: actions/checkout@v2
       with:
         repository: apache/httpd
-        ref: 'trunk'
+        ref: 'master'
 
     - name: Install dependencies
       run: |
-        wine msiexec /i http://download.microsoft.com/download/E/7/6/E76850B8-DA6E-4FF5-8CCE-A24FC513FD16/Windows6.1-KB976932-X86.exe
-        wine msiexec /i http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe
+        choco install -y perl activeperl
+        choco install -y nasm
+        choco install -y awk
+        choco install -y patch
+        choco install -y diffutils
 
     - name: Build
       run: |
         cd srclib\apr
-        wine nmake /f Makefile.win buildall
+        nmake /f Makefile.win buildall
         cd ..\apr-iconv
-        wine nmake /f Makefile.win buildall
+        nmake /f Makefile.win buildall
         cd ..\apr-util
-        wine nmake /f Makefile.win buildall
+        nmake /f Makefile.win buildall
         cd ..\..
-        wine nmake /f Makefile.win buildall
+        nmake /f Makefile.win buildall
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
