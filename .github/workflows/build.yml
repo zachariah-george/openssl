@@ -9,38 +9,29 @@ on:
 
 jobs:
   build:
+
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Apache HTTPD code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
       with:
-        repository: apache/httpd
-        ref: 'trunk'
+        repository: openssl/openssl
+        ref: OpenSSL_1_1_1-stable
 
-    - name: Install dependencies
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Configure OpenSSL
       run: |
-        choco install -y perl activeperl
-        choco install -y nasm
-        choco install -y awk
-        choco install -y patch
-        choco install -y diffutils
+        perl Configure VC-WIN32
+        nmake
 
-    - name: Build
-      run: |
-        cd srclib\apr
-        nmake /f Makefile.win buildall
-        cd ..\apr-iconv
-        nmake /f Makefile.win buildall
-        cd ..\apr-util
-        nmake /f Makefile.win buildall
-        cd ..\..
-        nmake /f Makefile.win buildall
+    - name: Build OpenSSL
+      run: nmake install
 
-    - name: Upload artifact
+    - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: httpd-build
+        name: openssl-windows
         path: |
-          **/Release/*.dll
-          **/Release/*.exe
+          ./openssl-1.1.1d.tar.gz
