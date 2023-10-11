@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: apache/httpd
-        ref: 'refs/tags/latest'
+        ref: 'trunk'
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.0.2
