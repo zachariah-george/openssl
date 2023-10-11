@@ -24,7 +24,7 @@ jobs:
       uses: ilammy/setup-nasm@v1.4.0
     - name: Configure OpenSSL
       run: |
-        perl Configure VC-WIN32 --prefix=C:\openssl
+        perl Configure VC-WIN64A --prefix=C:\openssl
 
     - name: Build OpenSSL
       run: |
