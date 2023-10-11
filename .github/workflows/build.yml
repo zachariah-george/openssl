@@ -24,6 +24,10 @@ jobs:
       run: |
         choco install nasm
 
+    - name: Add NASM to PATH
+      run: |
+        echo "C:\Program Files\NASM" >> $GITHUB_PATH
+
     - name: Configure OpenSSL
       run: |
         perl Configure VC-WIN32 --prefix=C:\openssl
