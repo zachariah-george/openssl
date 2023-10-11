@@ -18,6 +18,10 @@ jobs:
         repository: apache/httpd
         ref: 'trunk'
 
+    - name: Install Scoop
+      run: |
+        iwr -useb get.scoop.sh | iex
+        
     - name: Install dependencies
       run: |
         scoop install perl
