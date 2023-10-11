@@ -10,7 +10,7 @@ jobs:
   build:
 
     runs-on: windows-latest
-
+    
     steps:
     - uses: actions/checkout@v2
       with:
@@ -25,9 +25,11 @@ jobs:
         choco install nasm
 
     - name: Add NASM to PATH
-      run: |
-        echo "C:\Program Files\NASM" >> $GITHUB_PATH
+      run: echo "C:\tools" >> $GITHUB_PATH
 
+    - name: Add NASM to PATH
+      run: echo "C:\tools" >> $GITHUB_PATH
+    
     - name: Configure OpenSSL
       run: |
         perl Configure VC-WIN32 --prefix=C:\openssl
