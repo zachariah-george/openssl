@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: apache/httpd
-        ref: 'master'
+        ref: 'trunk'
 
     - name: Install dependencies
       run: |
