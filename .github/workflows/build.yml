@@ -27,8 +27,8 @@ jobs:
     - name: Add NASM to PATH
       run: echo "C:\tools" >> $GITHUB_PATH
 
-    - name: Add NASM to PATH
-      run: echo "C:\tools" >> $GITHUB_PATH
+    - name: Print system PATH
+      run: echo $PATH
     
     - name: Configure OpenSSL
       run: |
