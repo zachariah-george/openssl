@@ -3,10 +3,10 @@ name: Build Apache HTTPD
 on:
   push:
     branches:
-      - main
+      - master
     paths:
-      - '**.yml'
- 
+      - '.github/workflows/build.yml'
+
 jobs:
   build:
     runs-on: windows-latest
@@ -18,17 +18,24 @@ jobs:
         repository: apache/httpd
         ref: 'trunk'
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Setup Nuget
-      uses: NuGet/setup-nuget@v1.0.5
-
-    - name: Restore Nuget packages
-      run: nuget restore httpd.sln
+    - name: Install dependencies
+      run: |
+        choco install -y perl activeperl
+        choco install -y nasm
+        choco install -y awk
+        choco install -y patch
+        choco install -y diffutils
 
     - name: Build
-      run: msbuild /p:Configuration=Release httpd.sln
+      run: |
+        cd srclib\apr
+        nmake /f Makefile.win buildall
+        cd ..\apr-iconv
+        nmake /f Makefile.win buildall
+        cd ..\apr-util
+        nmake /f Makefile.win buildall
+        cd ..\..
+        nmake /f Makefile.win buildall
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
