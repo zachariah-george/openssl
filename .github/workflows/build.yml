@@ -2,8 +2,8 @@ name: Build Apache HTTPD
 
 on:
   push:
-    branches:
-      - master
+    # branches:
+    #   - master
     paths:
       - '**.yml'
 
