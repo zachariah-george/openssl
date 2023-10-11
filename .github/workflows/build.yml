@@ -9,7 +9,9 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    container:
+      image: scottyhardy/docker-wine:latest
 
     steps:
     - name: Checkout Apache HTTPD code
@@ -18,28 +20,21 @@ jobs:
         repository: apache/httpd
         ref: 'trunk'
 
-    - name: Install Scoop
-      run: |
-        iwr -useb get.scoop.sh | iex
-        
     - name: Install dependencies
       run: |
-        scoop install perl
-        scoop install nasm
-        scoop install gawk
-        scoop install patch
-        scoop install diffutils
+        wine msiexec /i http://download.microsoft.com/download/E/7/6/E76850B8-DA6E-4FF5-8CCE-A24FC513FD16/Windows6.1-KB976932-X86.exe
+        wine msiexec /i http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe
 
     - name: Build
       run: |
         cd srclib\apr
-        nmake /f Makefile.win buildall
+        wine nmake /f Makefile.win buildall
         cd ..\apr-iconv
-        nmake /f Makefile.win buildall
+        wine nmake /f Makefile.win buildall
         cd ..\apr-util
-        nmake /f Makefile.win buildall
+        wine nmake /f Makefile.win buildall
         cd ..\..
-        nmake /f Makefile.win buildall
+        wine nmake /f Makefile.win buildall
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
