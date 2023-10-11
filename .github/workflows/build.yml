@@ -7,6 +7,16 @@ on:
     paths:
       - '**.yml'
 
+yaml
+Copy code
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
 jobs:
   build:
 
@@ -27,15 +37,17 @@ jobs:
 
     - name: Configure OpenSSL
       run: |
-        perl Configure VC-WIN32
-        nmake
+        perl Configure VC-WIN32 --prefix=C:\openssl
 
     - name: Build OpenSSL
-      run: nmake install
+      run: |
+        nmake
+        nmake test
+        nmake install
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
         name: openssl-windows
         path: |
-          ./openssl-1.1.1d.tar.gz
+          C:\openssl
