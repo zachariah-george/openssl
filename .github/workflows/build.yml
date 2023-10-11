@@ -5,111 +5,50 @@ on:
     paths:
       - '**.yml'
 
-# jobs:
-#   build:
-#     runs-on: windows-latest
-    
-#     steps:
-#     - uses: actions/checkout@v2
-#       with:
-#         repository: openssl/openssl
-#         ref: openssl-3.1.3
-
-#     - name: Set up MSVC
-#       uses: ilammy/msvc-dev-cmd@v1
-
-#     - name: Set up NASM
-#       uses: ilammy/setup-nasm@v1.4.0
-
-#     - name: Configure OpenSSL
-#       run: |
-#         perl Configure VC-WIN64A --prefix=C:\openssl
-
-#     - name: Build OpenSSL
-#       run: |
-#         nmake
-#         nmake test
-#         nmake install
-
-#     - name: Archive production artifacts
-#       uses: actions/upload-artifact@v2
-#       with:
-#         name: openssl-windows
-#         path: C:\openssl
-
-#     - name: Create Release
-#       id: create_release
-#       uses: actions/create-release@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         tag_name: ${{ github.ref }}
-#         release_name: Release ${{ github.ref }}
-#         draft: false
-#         prerelease: false
-
-#     - name: Upload Release Asset
-#       uses: actions/upload-release-asset@v1
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#       with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: C:\openssl
-#         asset_name: openssl-windows.zip
-#         asset_content_type: application/zip
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        config:
-          - VC-WIN64A
-          - VC-WIN32
-
-    env:
-      OPENSSL_PREFIX: C:\openssl
-      ASSET_NAME: openssl-windows.zip
-
+    
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
       with:
         repository: openssl/openssl
         ref: openssl-3.1.3
 
-    - name: Set up Build Environment
-      run: |
-        choco install nasm
-        choco install ninja
-        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\Common7\Tools\VsDevCmd.bat"
+    - name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Set up NASM
+      uses: ilammy/setup-nasm@v1.4.0
+
+    - name: Install ninja-build tool
+      uses: seanmiddleditch/gha-setup-ninja@v4
 
     - name: Configure OpenSSL
       run: |
-        for config in ${{ matrix.config }}; do
-          perl Configure $config --prefix=$OPENSSL_PREFIX
-        done
+        perl Configure VC-WIN64A --prefix=C:\openssl no-makedepend --openssldir=C:\openssl -ninja
+
+    - name: Build OpenSSL
+      run: |
+        ninja
+        ninja test
+        ninja install
+
+    # - name: Configure OpenSSL
+    #   run: |
+    #     perl Configure VC-WIN64A --prefix=C:\openssl
 
     # - name: Build OpenSSL
     #   run: |
-    #     for config in ${{ matrix.config }}; do
-    #       nmake
-    #       nmake test
-    #       nmake install
-    #     done
-    - name: Build OpenSSL
-      run: |
-        for config in ${{ matrix.config }}; do
-          ninja
-          ninja test
-          ninja install
-        done
+    #     nmake
+    #     nmake test
+    #     nmake install
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
         name: openssl-windows
-        path: $OPENSSL_PREFIX
+        path: C:\openssl
 
     - name: Create Release
       id: create_release
@@ -128,6 +67,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: $OPENSSL_PREFIX
-        asset_name: $ASSET_NAME
+        asset_path: C:\openssl
+        asset_name: openssl-windows.zip
         asset_content_type: application/zip
