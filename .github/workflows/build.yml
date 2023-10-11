@@ -21,28 +21,15 @@ jobs:
     - name: Set up NASM
       uses: ilammy/setup-nasm@v1.4.0
 
-    - name: Install ninja-build tool
-      uses: seanmiddleditch/gha-setup-ninja@v4
-
     - name: Configure OpenSSL
       run: |
-        perl Configure VC-WIN64A --prefix=C:\openssl no-makedepend --openssldir=C:\openssl -ninja
+        perl Configure VC-WIN64A --prefix=C:\openssl
 
     - name: Build OpenSSL
       run: |
-        ninja
-        ninja test
-        ninja install
-
-    # - name: Configure OpenSSL
-    #   run: |
-    #     perl Configure VC-WIN64A --prefix=C:\openssl
-
-    # - name: Build OpenSSL
-    #   run: |
-    #     nmake
-    #     nmake test
-    #     nmake install
+        nmake
+        nmake test
+        nmake install
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
