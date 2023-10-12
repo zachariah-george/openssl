@@ -40,25 +40,32 @@ jobs:
         nmake test
         nmake install
 
-    - name: Zip OpenSSL build
+    - name: Compress OpenSSL
       run: |
         Compress-Archive -Path C:\openssl -DestinationPath openssl.zip
 
-    - name: Create ZIP Archive
-      run: |
-        Compress-Archive -Path C:\openssl -DestinationPath C:\openssl.zip
-      shell: powershell
-
-    - name: Move ZIP Archive to Repository Directory
-      run: |
-        Move-Item -Path 'C:\openssl.zip' -Destination "$Env:GITHUB_WORKSPACE\openssl.zip"
-      shell: powershell
-
-    - name: Commit and Push ZIP Archive
-      run: |
-        git config user.name "Your Name"
-        git config user.email "your@email.com"
-        git add C:\openssl.zip
-        git commit -m "Add OpenSSL ZIP archive"
-        git push
-      shell: powershell
+    - name: Get the date
+      id: date
+      run: echo "::set-output name=date::$(date -u +'%Y%m%d%H%M%S')"
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ steps.date.outputs.date }}
+        release_name: ${{ steps.date.outputs.date }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./openssl.zip
+        asset_name: openssl.zip
+        asset_content_type: application/zip
