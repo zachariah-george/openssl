@@ -49,6 +49,11 @@ jobs:
         Compress-Archive -Path C:\openssl -DestinationPath C:\openssl.zip
       shell: powershell
 
+    - name: Move ZIP Archive to Repository Directory
+      run: |
+        Move-Item -Path 'C:\openssl.zip' -Destination "$Env:GITHUB_WORKSPACE\openssl.zip"
+      shell: powershell
+
     - name: Commit and Push ZIP Archive
       run: |
         git config user.name "Your Name"
