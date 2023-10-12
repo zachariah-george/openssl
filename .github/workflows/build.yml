@@ -14,6 +14,15 @@ jobs:
       with:
         repository: openssl/openssl
         ref: openssl-3.1.3
+    
+    - name: Cache OpenSSL build
+      id: cache-openssl
+      uses: actions/cache@v2
+      with:
+        path: C:\openssl
+        key: ${{ runner.os }}-openssl-${{ hashFiles('**/openssl/*.yml') }}
+        restore-keys: |
+          ${{ runner.os }}-openssl-
 
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
@@ -63,6 +72,8 @@ jobs:
     #     release_name: Release ${{ github.ref }}
     #     draft: false
     #     prerelease: false
+    - name: Zip artifacts
+      run: Compress-Archive -Path C:\openssl -DestinationPath openssl-windows.zip
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -70,6 +81,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: C:\openssl
+        asset_path: openssl-windows.zip
         asset_name: openssl-windows.zip
         asset_content_type: application/zip
+
+    # - name: Upload Release Asset
+    #   uses: actions/upload-release-asset@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+    #     asset_path: C:\openssl
+    #     asset_name: openssl-windows.zip
+    #     asset_content_type: application/zip
