@@ -10,20 +10,6 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    
-    # - uses: actions/checkout@v2
-    #   with:
-    #     repository: openssl/openssl
-    #     ref: ${{ steps.latest_tag.outputs.latest_tag }}
-        
-    # - name: Cache OpenSSL build
-    #   id: cache-openssl
-    #   uses: actions/cache@v2
-    #   with:
-    #     path: C:\openssl
-    #     key: ${{ runner.os }}-openssl-${{ hashFiles('**/openssl/*.yml') }}
-    #     restore-keys: |
-    #       ${{ runner.os }}-openssl-
 
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
@@ -65,14 +51,23 @@ jobs:
       id: date
       run: echo "::set-output name=date::$(date -u +'%Y%m%d%H%M%S')"
     
+    - name: Set Release Name
+      id: set_release_name
+      run: |
+        latest_version="${{ steps.latest_tag.outputs.latest_tag }}"
+        datetime=$(date +"%Y%m%d%H%M%S")
+        version_with_datetime="$latest_version-$datetime"
+        echo "::set-output name=release_name::$version_with_datetime"
+      shell: bash
+    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: ${{ steps.date.outputs.date }}
-        release_name: ${{ steps.date.outputs.date }}
+        tag_name: 'latest'
+        release_name: ${{ steps.set_release_name.outputs.release_name }}
         draft: false
         prerelease: false
     
