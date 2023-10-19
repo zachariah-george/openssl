@@ -27,7 +27,7 @@ jobs:
         latest_tag=$(curl -s "https://api.github.com/repos/openssl/openssl/releases/latest" | jq -r .tag_name)
         echo "::set-output name=latest_tag::$latest_tag"
       shell: bash
-	  
+      
     - name: Get 'latest' tag from zachariah-george/openssl repo
       id: latest_tag_unofficial
       run: |
