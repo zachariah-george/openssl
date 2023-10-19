@@ -31,8 +31,9 @@ jobs:
     - name: Set up NASM
       uses: ilammy/setup-nasm@v1.4.0
 
-    - name: Run jq
-      uses: sergeysova/jq-action@v2
+    - name: Set up jq
+      run: |
+        choco install jq
 
     - name: Get Latest Tag
       id: latest_tag
