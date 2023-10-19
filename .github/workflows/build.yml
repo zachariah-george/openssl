@@ -10,19 +10,20 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: openssl/openssl
-        tags: latest
+    
+    # - uses: actions/checkout@v2
+    #   with:
+    #     repository: openssl/openssl
+    #     ref: ${{ steps.latest_tag.outputs.latest_tag }}
         
-    - name: Cache OpenSSL build
-      id: cache-openssl
-      uses: actions/cache@v2
-      with:
-        path: C:\openssl
-        key: ${{ runner.os }}-openssl-${{ hashFiles('**/openssl/*.yml') }}
-        restore-keys: |
-          ${{ runner.os }}-openssl-
+    # - name: Cache OpenSSL build
+    #   id: cache-openssl
+    #   uses: actions/cache@v2
+    #   with:
+    #     path: C:\openssl
+    #     key: ${{ runner.os }}-openssl-${{ hashFiles('**/openssl/*.yml') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-openssl-
 
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
@@ -30,6 +31,21 @@ jobs:
     - name: Set up NASM
       uses: ilammy/setup-nasm@v1.4.0
 
+    - name: Run jq
+      uses: sergeysova/jq-action@v2
+
+    - name: Get Latest Tag
+      id: latest_tag
+      run: |
+        latest_tag=$(curl -s "https://api.github.com/repos/openssl/openssl/releases/latest" | jq -r .tag_name)
+        echo "::set-output name=latest_tag::$latest_tag"
+      shell: bash
+
+    - uses: actions/checkout@v2
+      with:
+        repository: openssl/openssl
+        ref: ${{ steps.latest_tag.outputs.latest_tag }}
+   
     - name: Configure OpenSSL
       run: |
         perl Configure VC-WIN64A --prefix=C:\openssl
