@@ -57,7 +57,7 @@ jobs:
         latest_version="${{ steps.latest_tag.outputs.latest_tag }}"
         datetime=$(date +"%Y%m%d%H%M%S")
         version_with_datetime="$latest_version-$datetime"
-        echo "::set-output name=release_name::$version_with_datetime"
+        echo "::set-output name=release_name::$latest_version"
       shell: bash
     
     - name: Create Release
