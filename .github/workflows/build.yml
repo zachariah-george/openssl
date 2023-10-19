@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: openssl/openssl
-        ref: tags/latest
+        tags: latest
         
     - name: Cache OpenSSL build
       id: cache-openssl
