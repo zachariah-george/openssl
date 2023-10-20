@@ -110,7 +110,7 @@ jobs:
 
     - if: steps.latest_tag.outputs.latest_tag_unofficial != steps.latest_tag.outputs.latest_tag
       name: Upload release asset
-      uses: ncipollo/release-action@latest
+      uses: ncipollo/release-action@v1
       with:
         artifacts: "./openssl.zip"
         allowUpdates: true
