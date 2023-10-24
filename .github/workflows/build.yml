@@ -38,6 +38,7 @@ jobs:
         $latest_tag = $response.tag_name
         Write-Host $latest_tag
         Write-Host "official_tag=$latest_tag" >> $env:GITHUB_ENV
+        echo "official_tag=$latest_tag" >> $env:GITHUB_ENV
       shell: powershell
 
       
@@ -57,6 +58,7 @@ jobs:
         $latest_tag_unofficial = $response.tag_name
         Write-Host $latest_tag_unofficial
         Write-Host "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
+        echo "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
       shell: powershell
 
     # - name: Compare tags
