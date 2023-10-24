@@ -26,19 +26,16 @@ jobs:
       id: latest_tag
       run: |
         latest_tag=$(curl -s "https://api.github.com/repos/openssl/openssl/releases/latest" | jq -r .tag_name)
-        # echo "::set-output name=latest_tag::$latest_tag"
+        echo "$latest_tag"
         echo "official_tag=$latest_tag" >> $GITHUB_ENV
-        echo "$official_tag"
       shell: bash
       
     - name: Get 'latest' tag from zachariah-george/openssl repo
       id: latest_tag_unofficial
       run: |
         latest_tag_unofficial=$(curl -s "https://api.github.com/repos/zachariah-george/openssl/releases/latest" | jq -r .tag_name)
-        # echo "::set-output name=latest_tag_unofficial::$latest_tag_unofficial"
         echo "$latest_tag_unofficial"
         echo "repo_tag=$latest_tag_unofficial" >> $GITHUB_ENV
-        echo "$repo_tag"
       shell: bash
 
     - if: env.repo_tag != env.official_tag
