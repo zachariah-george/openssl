@@ -11,13 +11,6 @@ jobs:
     runs-on: windows-latest
     
     steps:
-
-    - name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1
-
-    - name: Set up NASM
-      uses: ilammy/setup-nasm@v1
-
     - name: Get 'latest' tag from openssl/openssl repo
       id: latest_tag
       run: |
@@ -65,7 +58,15 @@ jobs:
     - if: env.repo_tag != env.official_tag
       name: Check Tags
       run: echo "This repo is behind official."
+    
+    - if: env.repo_tag != env.official_tag
+      name: Set up MSVC
+      uses: ilammy/msvc-dev-cmd@v1
 
+    - if: env.repo_tag != env.official_tag
+      name: Set up NASM
+      uses: ilammy/setup-nasm@v1
+    
     - if: env.repo_tag != env.official_tag
       uses: actions/checkout@v4
       with:
