@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '**.yml'
+  schedule:
+    - cron: '*/5 * * * *'
 
 jobs:
   build:
