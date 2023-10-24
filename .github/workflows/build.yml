@@ -1,5 +1,4 @@
-name: Build Apache HTTPD
-
+name: Build
 on:
   # push:
   #   paths:
