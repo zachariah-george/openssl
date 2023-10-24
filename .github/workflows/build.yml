@@ -59,12 +59,12 @@ jobs:
         Write-Host "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
       shell: powershell
 
-    - name: Compare tags
-      id: compare_tags
-      run: |
-        echo "unofficial=$repo_tag"
-        echo "official=$official_tag"
-      shell: bash
+    # - name: Compare tags
+    #   id: compare_tags
+    #   run: |
+    #     echo "unofficial=$repo_tag"
+    #     echo "official=$official_tag"
+    #   shell: bash
       
     - if: env.repo_tag != env.official_tag
       name: Check Tags
