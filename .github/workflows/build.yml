@@ -33,20 +33,20 @@ jobs:
         echo "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
       shell: powershell
 
-    - name: Generate release notes
-      # name: Generate release notes
+    - if: env.repo_tag != env.official_tag
+      name: Clone OpenSSL repository
+      run: |
+        git clone git://git.openssl.org/openssl.git
+
+    - if: env.repo_tag != env.official_tag
+      name: Generate release notes
       id: generate_release_notes
       run: |
-        $url = "https://api.github.com/repos/openssl/openssl/compare/${{ env.repo_tag }}...${{ env.official_tag }}"
-        $response = Invoke-RestMethod -Uri $url -Method Get
-        $commits = $response.commits
-        $notes = ""
-        foreach ($commit in $commits) {
-          $notes += "- ${commit.commit.message} ([${commit.sha.substring(0, 7)}](${commit.html_url}))\n"
-        }
-        Write-Host "release_notes=$notes" >> $env:GITHUB_ENV
-        echo "release_notes=$notes" >> $env:GITHUB_ENV
-      shell: powershell
+        cd openssl
+        git fetch --all --tags
+        release_notes=$(git log --pretty=format:"- %s ([%h](http://git.openssl.org/gitweb/?p=openssl.git;a=commit;h=%H))" ${{ env.repo_tag }}..${{ env.official_tag }})
+        echo "release_notes=$release_notes" >> $GITHUB_ENV
+      shell: bash
 
     # - name: Compare tags
     #   id: compare_tags
