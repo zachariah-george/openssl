@@ -40,21 +40,20 @@ jobs:
         echo "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
       shell: powershell
 
-    - name: Generate Release Notes
+    - name: Generate release notes
+      # name: Generate release notes
       id: generate_release_notes
       run: |
-        # Compare changes between the official and custom repositories
-        changes=$(git log --pretty=format:"%h %s (%an)" ${{ env.official_tag }}..HEAD)
-        
-        # Create a release notes file
-        echo "Release Notes" > release_notes.txt
-        echo "=================" >> release_notes.txt
-        echo "" >> release_notes.txt
-        echo "$changes" >> release_notes.txt
-    
-        # Set the release notes as an environment variable
-        echo "::set-env name=RELEASE_NOTES::$(cat release_notes.txt)"
-      shell: bash
+        $url = "https://api.github.com/repos/openssl/openssl/compare/${{ env.repo_tag }}...${{ env.official_tag }}"
+        $response = Invoke-RestMethod -Uri $url -Method Get
+        $commits = $response.commits
+        $notes = ""
+        foreach ($commit in $commits) {
+          $notes += "- ${commit.commit.message} ([${commit.sha.substring(0, 7)}](${commit.html_url}))\n"
+        }
+        Write-Host "release_notes=$notes" >> $env:GITHUB_ENV
+        echo "release_notes=$notes" >> $env:GITHUB_ENV
+      shell: powershell
 
     # - name: Compare tags
     #   id: compare_tags
