@@ -111,6 +111,7 @@ jobs:
         release_name: ${{ env.official_tag }}
         draft: false
         prerelease: false
+        body: ${{ env.release_notes }}
     
     - if: env.repo_tag != env.official_tag
       name: Upload release asset
