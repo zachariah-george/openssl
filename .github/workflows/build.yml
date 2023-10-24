@@ -16,7 +16,7 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
 
     - name: Set up NASM
-      uses: ilammy/setup-nasm@v1.4.0
+      uses: ilammy/setup-nasm@v1
 
     - name: Set up jq
       run: |
@@ -26,21 +26,29 @@ jobs:
       id: latest_tag
       run: |
         latest_tag=$(curl -s "https://api.github.com/repos/openssl/openssl/releases/latest" | jq -r .tag_name)
-        echo "::set-output name=latest_tag::$latest_tag"
-        echo "$latest_tag"
+        # echo "::set-output name=latest_tag::$latest_tag"
+        echo "official_tag=$latest_tag" >> $GITHUB_ENV
+        echo "$official_tag"
       shell: bash
       
     - name: Get 'latest' tag from zachariah-george/openssl repo
       id: latest_tag_unofficial
       run: |
         latest_tag_unofficial=$(curl -s "https://api.github.com/repos/zachariah-george/openssl/releases/latest" | jq -r .tag_name)
-        echo "::set-output name=latest_tag_unofficial::$latest_tag_unofficial"
+        # echo "::set-output name=latest_tag_unofficial::$latest_tag_unofficial"
         echo "$latest_tag_unofficial"
+        echo "repo_tag=$latest_tag_unofficial" >> $GITHUB_ENV
+        echo "$repo_tag"
       shell: bash
 
-    - if: steps.latest_tag.outputs.latest_tag_unofficial != steps.latest_tag.outputs.latest_tag
+    - if: env.repo_tag != env.official_tag
       name: Check Tags
       run: echo "Unofficial tag is different from official tag."
+
+    - if: env.repo_tag == env.official_tag
+      name: Check Tags
+      run: echo "Unofficial tag is same as official tag."
+
 
     # - if: steps.latest_tag.outputs.latest_tag_unofficial != steps.latest_tag.outputs.latest_tag
     #   uses: actions/checkout@v2
