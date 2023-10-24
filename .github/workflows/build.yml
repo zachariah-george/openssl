@@ -18,9 +18,9 @@ jobs:
     - name: Set up NASM
       uses: ilammy/setup-nasm@v1
 
-    - name: Set up jq
-      run: |
-        choco install jq
+    # - name: Set up jq
+    #   run: |
+    #     choco install jq
 
     # - name: Get 'latest' tag from openssl/openssl repo
     #   id: latest_tag
@@ -41,13 +41,23 @@ jobs:
       shell: powershell
 
       
+    # - name: Get 'latest' tag from zachariah-george/openssl repo
+    #   id: latest_tag_unofficial
+    #   run: |
+    #     latest_tag_unofficial=$(curl -s "https://api.github.com/repos/zachariah-george/openssl/releases/latest" | jq -r .tag_name)
+    #     echo "$latest_tag_unofficial"
+    #     echo "repo_tag=$latest_tag_unofficial" >> $GITHUB_ENV
+    #   shell: bash
+
     - name: Get 'latest' tag from zachariah-george/openssl repo
       id: latest_tag_unofficial
       run: |
-        latest_tag_unofficial=$(curl -s "https://api.github.com/repos/zachariah-george/openssl/releases/latest" | jq -r .tag_name)
-        echo "$latest_tag_unofficial"
-        echo "repo_tag=$latest_tag_unofficial" >> $GITHUB_ENV
-      shell: bash
+        $url = "https://api.github.com/repos/zachariah-george/openssl/releases/latest"
+        $response = Invoke-RestMethod -Uri $url -Method Get
+        $latest_tag_unofficial = $response.tag_name
+        Write-Host $latest_tag_unofficial
+        Write-Host "repo_tag=$latest_tag_unofficial" >> $env:GITHUB_ENV
+      shell: powershell
 
     - name: Compare tags
       id: compare_tags
