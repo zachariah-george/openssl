@@ -17,18 +17,6 @@ jobs:
 
     - name: Set up NASM
       uses: ilammy/setup-nasm@v1
-      
-    # - name: Set up jq
-    #   run: |
-    #     choco install jq
-
-    # - name: Get 'latest' tag from openssl/openssl repo
-    #   id: latest_tag
-    #   run: |
-    #     latest_tag=$(curl -s "https://api.github.com/repos/openssl/openssl/releases/latest" | jq -r .tag_name)
-    #     echo "$latest_tag"
-    #     echo "official_tag=$latest_tag" >> $GITHUB_ENV
-    #   shell: bash
 
     - name: Get 'latest' tag from openssl/openssl repo
       id: latest_tag
@@ -40,15 +28,6 @@ jobs:
         Write-Host "official_tag=$latest_tag" >> $env:GITHUB_ENV
         echo "official_tag=$latest_tag" >> $env:GITHUB_ENV
       shell: powershell
-
-      
-    # - name: Get 'latest' tag from zachariah-george/openssl repo
-    #   id: latest_tag_unofficial
-    #   run: |
-    #     latest_tag_unofficial=$(curl -s "https://api.github.com/repos/zachariah-george/openssl/releases/latest" | jq -r .tag_name)
-    #     echo "$latest_tag_unofficial"
-    #     echo "repo_tag=$latest_tag_unofficial" >> $GITHUB_ENV
-    #   shell: bash
 
     - name: Get 'latest' tag from zachariah-george/openssl repo
       id: latest_tag_unofficial
@@ -71,10 +50,6 @@ jobs:
     - if: env.repo_tag != env.official_tag
       name: Check Tags
       run: echo "This repo is behind official."
-
-    # - if: env.repo_tag == env.official_tag
-    #   name: Check Tags
-    #   run: echo "Unofficial tag is same as official tag."
 
     - if: env.repo_tag != env.official_tag
       uses: actions/checkout@v4
