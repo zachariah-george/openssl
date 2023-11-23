@@ -59,17 +59,27 @@ jobs:
       name: Check Tags
       run: echo "This repo is behind official."
     
+    # - if: env.repo_tag != env.official_tag
+    #   name: Set up MSVC
+    #   # uses: ilammy/msvc-dev-cmd@v1
+    #   uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
+    #   with:
+    #    arch: x64
+
+    # - if: env.repo_tag != env.official_tag
+    #   name: Set up NASM
+    #   uses: ilammy/setup-nasm@v1
+    - if: env.repo_tag != env.official_tag
+      name: Install NASM
+      run: |
+        choco install nasm
+    
     - if: env.repo_tag != env.official_tag
       name: Set up MSVC
-      # uses: ilammy/msvc-dev-cmd@v1
-      uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
-      with:
-       arch: x64
-
-    - if: env.repo_tag != env.official_tag
-      name: Set up NASM
-      uses: ilammy/setup-nasm@v1
-    
+      run: |
+        $msvcPath = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
+        Invoke-Expression "& '$msvcPath\vcvars64.bat'"
+      shell: cmd    
     - if: env.repo_tag != env.official_tag
       uses: actions/checkout@v4
       with:
