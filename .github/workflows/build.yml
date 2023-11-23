@@ -38,15 +38,15 @@ jobs:
       run: |
         git clone git://git.openssl.org/openssl.git
 
-    - if: env.repo_tag != env.official_tag
-      name: Generate release notes
-      id: generate_release_notes
-      run: |
-        cd openssl
-        git fetch --all --tags
-        release_notes=$(git log --pretty=format:"- %s ([%h](http://git.openssl.org/gitweb/?p=openssl.git;a=commit;h=%H))" ${{ env.repo_tag }}..${{ env.official_tag }})
-        echo "release_notes=$release_notes" >> $GITHUB_ENV
-      shell: bash
+    # - if: env.repo_tag != env.official_tag
+    #   name: Generate release notes
+    #   id: generate_release_notes
+    #   run: |
+    #     cd openssl
+    #     git fetch --all --tags
+    #     release_notes=$(git log --pretty=format:"- %s ([%h](http://git.openssl.org/gitweb/?p=openssl.git;a=commit;h=%H))" ${{ env.repo_tag }}..${{ env.official_tag }})
+    #     echo "release_notes=$release_notes" >> $GITHUB_ENV
+    #   shell: bash
 
     # - name: Compare tags
     #   id: compare_tags
@@ -115,7 +115,7 @@ jobs:
         release_name: ${{ env.official_tag }}
         draft: false
         prerelease: false
-        body: ${{ env.release_notes }}
+        # body: ${{ env.release_notes }}
     
     - if: env.repo_tag != env.official_tag
       name: Upload release asset
