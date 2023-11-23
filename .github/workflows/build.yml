@@ -61,7 +61,8 @@ jobs:
     
     - if: env.repo_tag != env.official_tag
       name: Set up MSVC
-      uses: ilammy/msvc-dev-cmd@v1
+      # uses: ilammy/msvc-dev-cmd@v1
+      uses: TheMrMilchmann/setup-msvc-dev@v3.0.0
 
     - if: env.repo_tag != env.official_tag
       name: Set up NASM
