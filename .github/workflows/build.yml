@@ -4,7 +4,7 @@ on:
     paths:
       - '**.yml'
   schedule:
-    - cron: '*/120 * * * *'
+    - cron: '*/600 * * * *'
 
 jobs:
   build:
